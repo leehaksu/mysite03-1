@@ -106,5 +106,24 @@ public class BoardController {
 		
 		return "board/write";
 	}
+	
+	@RequestMapping( value="/write", method=RequestMethod.POST )	
+	public String write(
+		HttpSession session,
+		@ModelAttribute BoardVo boardVo,
+		@RequestParam( value="p", required=true, defaultValue="1") Integer page,
+		@RequestParam( value="kwd", required=true, defaultValue="") String keyword ) {
+		
+		//인증 체크
+		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
+		if(  authUser == null ) {
+			return "redirect:/user/login";
+		}
+		
+		boardVo.setUserNo( authUser.getNo() );
+		boardService.addMessage( boardVo );
+		
+		return "redirect:/board";
+	}	
 
 }

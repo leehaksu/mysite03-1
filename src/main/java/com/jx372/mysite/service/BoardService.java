@@ -18,6 +18,10 @@ public class BoardService {
 	@Autowired
 	private BoardDao boardDao;
 	
+	public boolean addMessage( BoardVo boardVo ) {
+		return boardDao.insert( boardVo ) == 1;
+	}
+	
 	public BoardVo getMessage( Long no ) {
 		BoardVo boardVo = boardDao.get( no );
 		

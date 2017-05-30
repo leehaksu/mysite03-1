@@ -16,12 +16,8 @@ public class BoardDao {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	public int updateHit( Long no ) {
-		return sqlSession.update( "board.updateHit", no );
-	}
-	
-	public int getTotalCount( String keyword ) {
-		return sqlSession.selectOne( "board.getTotalCount", keyword );
+	public int insert( BoardVo boardVo ) {
+		return sqlSession.insert( "board.insert", boardVo );
 	}
 	
 	public List<BoardVo> getList( String keyword, Integer page, Integer size ) {
@@ -56,5 +52,13 @@ public class BoardDao {
 		map.put( "userNo", userNo );
 		
 		return sqlSession.selectOne( "board.getByNoAndUserNo", map );
+	}
+
+	public int updateHit( Long no ) {
+		return sqlSession.update( "board.updateHit", no );
+	}
+	
+	public int getTotalCount( String keyword ) {
+		return sqlSession.selectOne( "board.getTotalCount", keyword );
 	}	
 }
