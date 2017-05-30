@@ -44,5 +44,13 @@ public class BoardDao {
 
 	public BoardVo get( Long no ) {
 		return sqlSession.selectOne( "board.getByNo", no );
+	}
+	
+	public BoardVo get( Long no, Long userNo ) {
+		Map<String, Long> map = new HashMap<String, Long>();
+		map.put( "no", no );
+		map.put( "userNo", userNo );
+		
+		return sqlSession.selectOne( "board.getByNoAndUserNo", map );
 	}	
 }

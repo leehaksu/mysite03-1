@@ -61,6 +61,20 @@ public class BoardController {
 		return "redirect:/board?p=" + page + "&kwd=" + WebUtil.encodeURL( keyword, "UTF-8" );
 	}
 	
+	@RequestMapping( value="/modify/{no}" )	
+	public String modify( HttpSession session, @PathVariable( "no" ) Long no, Model model) {
+		//인증 체크
+		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
+		if(  authUser == null ) {
+			return "redirect:/user/login";
+		}
+
+		BoardVo boardVo = boardService.getMessage(no, authUser.getNo() );
+		model.addAttribute( "boardVo", boardVo );
+		
+		return "board/modify";
+	}
+	
 	@RequestMapping( value="/write", method=RequestMethod.GET )	
 	public String write( HttpSession session ) {
 		//인증 체크

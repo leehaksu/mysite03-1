@@ -27,6 +27,11 @@ public class BoardService {
 		
 		return boardVo;
 	}
+
+	public BoardVo getMessage( Long no, Long userNo ) {
+		BoardVo boardVo = boardDao.get( no, userNo );
+		return boardVo;
+	}
 	
 	public boolean deleteMessage( Long boardNo, Long userNo ) {
 		int count = boardDao.delete( boardNo, userNo );

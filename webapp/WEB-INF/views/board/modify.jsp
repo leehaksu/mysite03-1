@@ -14,10 +14,9 @@
 		<c:import url="/WEB-INF/views/include/header.jsp" />
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
-					<input type="hidden" name="a" value="modify"/>	
+				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/modify">
 					<input type="hidden" name="no" value="${boardVo.no }" />
-					<input type="hidden" name="kwd" value="${keyword }" />
+					<input type="hidden" name="kwd" value="${param.kwd }" />
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글수정</th>
@@ -34,7 +33,7 @@
 						</tr>
 					</table>
 					<div class="bottom">
-						<a href="javascript:history.go(-1);">취소</a>
+						<a href="${pageContext.request.contextPath }/board/view/${boardVo.no }?p=${param.p }&kwd=${param.kwd }">취소</a>
 						<input type="submit" value="수정">
 					</div>
 				</form>				

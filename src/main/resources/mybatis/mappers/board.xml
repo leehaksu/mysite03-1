@@ -27,6 +27,17 @@
 		  where no = #{no }		
 		]]>		
 	</select>
+	
+	<select id="getByNoAndUserNo" parameterType="map" resultType="boardvo">
+		<![CDATA[
+		select	no,
+				title,
+				content
+		   from board
+		  where no = #{no }
+		    and user_no = #{userNo }		
+		]]>		
+	</select>	
 		
 	<select id="getList" parameterType="map" resultType="boardvo">
 		<choose>
