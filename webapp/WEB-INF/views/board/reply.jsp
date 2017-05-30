@@ -14,12 +14,11 @@
 		<c:import url="/WEB-INF/views/include/header.jsp" />
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
-					<input type="hidden" name="a" value="write">
-					<input type="hidden" name="gno" value="${boardVo.groupNo }">
-					<input type="hidden" name="ono" value="${boardVo.orderNo }">
-					<input type="hidden" name="d" value="${boardVo.depth }">
-					<input type="hidden" name="kwd" value="${keyword }" />
+				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/write">
+					<input type="hidden" name="groupNo" value="${boardVo.groupNo }">
+					<input type="hidden" name="orderNo" value="${boardVo.orderNo }">
+					<input type="hidden" name="depth" value="${boardVo.depth }">
+					<input type="hidden" name="kwd" value="${param.kwd }" />
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글쓰기</th>
@@ -36,7 +35,7 @@
 						</tr>
 					</table>
 					<div class="bottom">
-						<a href="${pageContext.request.contextPath }/board">취소</a>
+						<a href="${pageContext.request.contextPath }/board?p=${param.p }&kwd=${param.kwd }">취소</a>
 						<input type="submit" value="등록">
 					</div>
 				</form>				

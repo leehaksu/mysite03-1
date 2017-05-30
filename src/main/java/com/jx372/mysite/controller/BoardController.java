@@ -124,6 +124,23 @@ public class BoardController {
 		boardService.addMessage( boardVo );
 		
 		return "redirect:/board";
+	}
+	
+	@RequestMapping( value="/reply/{no}" )	
+	public String reply( HttpSession session, @PathVariable( "no" ) Long no, Model model) {
+		//인증 체크
+		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
+		if(  authUser == null ) {
+			return "redirect:/user/login";
+		}
+
+		BoardVo boardVo = boardService.getMessage( no );
+		boardVo.setOrderNo( boardVo.getOrderNo() + 1 );
+		boardVo.setDepth( boardVo.getDepth() + 1 );
+		
+		model.addAttribute( "boardVo", boardVo );
+		
+		return "board/reply";
 	}	
 
 }
