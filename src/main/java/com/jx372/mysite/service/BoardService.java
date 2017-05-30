@@ -33,6 +33,11 @@ public class BoardService {
 		return boardVo;
 	}
 	
+	public boolean modifyMessage( BoardVo boardVo ) {
+		int count = boardDao.update( boardVo );
+		return count == 1;
+	}
+	
 	public boolean deleteMessage( Long boardNo, Long userNo ) {
 		int count = boardDao.delete( boardNo, userNo );
 		return count == 1;

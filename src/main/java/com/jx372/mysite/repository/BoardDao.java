@@ -34,6 +34,10 @@ public class BoardDao {
 		return sqlSession.selectList( "board.getList", map );
 	}
 
+	public int update( BoardVo boardVo ) {
+		return sqlSession.update( "board.update", boardVo );
+	}
+	
 	public int delete( Long no, Long userNo ) {
 		Map<String, Long> map = new HashMap<String, Long>();
 		map.put( "no", no );

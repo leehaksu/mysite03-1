@@ -8,9 +8,22 @@
 		]]>
 	</insert>
 
+	<update id="update" parameterType="boardVo">
+		<![CDATA[
+		update board 
+		   set title=#{title },
+		       content=#{content }
+		 where no=#{no }
+		   and user_no=#{userNo }		
+		]]>	
+	</update>
+	
 	<delete id="delete" parameterType="map" > 
 		<![CDATA[
-		delete from board where no = #{no } and user_no = #{userNo }
+		delete
+		  from board 
+		 where no = #{no }
+		   and user_no = #{userNo }
 		]]>	
 	</delete>
 
