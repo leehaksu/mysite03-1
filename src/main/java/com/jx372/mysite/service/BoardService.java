@@ -18,6 +18,16 @@ public class BoardService {
 	@Autowired
 	private BoardDao boardDao;
 	
+	public BoardVo getMessage( Long no ) {
+		BoardVo boardVo = boardDao.get( no );
+		
+		if( boardVo != null ) {
+			boardDao.updateHit( no );
+		}
+		
+		return boardVo;
+	}
+	
 	public Map<String, Object> getMessageList( int currentPage, String keyword ){
 		
 		//1. 페이징을 위한 기본 데이터 계산
@@ -27,12 +37,14 @@ public class BoardService {
 		int currentBlock = (int)Math.ceil( (double)currentPage / PAGE_SIZE );
 		
 		//2. 파라미터 page 값  검증
+		if( currentPage > pageCount ) {
+			currentPage = pageCount;
+			currentBlock = (int)Math.ceil( (double)currentPage / PAGE_SIZE );
+		}		
+		
 		if( currentPage < 1 ) {
 			currentPage = 1;
 			currentBlock = 1;
-		} else if( currentPage > pageCount ) {
-			currentPage = pageCount;
-			currentBlock = (int)Math.ceil( (double)currentPage / PAGE_SIZE );
 		}
 		
 		//3. view에서 페이지 리스트를 렌더링 하기위한 데이터 값 계산

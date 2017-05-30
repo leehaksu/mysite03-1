@@ -15,7 +15,7 @@
 		<div id="content">
 			<div id="board">
 				<form id="search_form" action="${pageContext.request.contextPath }/board" method="get">
-					<input type="text" id="kwd" name="kwd" value="${map.keyword }">
+					<input type="text" id="kwd" name="kwd" value="${param.kwd }">
 					<input type="submit" value="찾기">
 				</form>
 				<table class="tbl-ex">
@@ -34,12 +34,12 @@
 								<c:when test="${vo.depth > 0 }">
 									<td class="left" style="padding-left:${20*vo.depth }px">
 										<img src="${pageContext.request.contextPath }/assets/images/reply.png">
-										<a href="${pageContext.request.contextPath }/board/view/${vo.no }?p=${map.currentPage }&kwd=${map.keyword }">${vo.title }</a>
+										<a href="${pageContext.request.contextPath }/board/view/${vo.no }?p=${param.p }&kwd=${param.kwd }">${vo.title }</a>
 									</td>
 								</c:when>
 								<c:otherwise>
 									<td class="left">
-										<a href="${pageContext.request.contextPath }/board/view/${vo.no }?p=${map.currentPage }&kwd=${map.keyword }">${vo.title }</a>
+										<a href="${pageContext.request.contextPath }/board/view/${vo.no }?p=${param.p }&kwd=${param.kwd }">${vo.title }</a>
 									</td>
 								</c:otherwise>
 							</c:choose>
@@ -86,7 +86,7 @@
 				</div>				
 				<div class="bottom">
 					<c:if test="${not empty authUser }">
-						<a href="${pageContext.request.contextPath }/board?a=writeform" id="new-book">글쓰기</a>
+						<a href="${pageContext.request.contextPath }/board/write?p=${param.p }&kwd=${param.kwd }" id="new-book">글쓰기</a>
 					</c:if>
 				</div>
 			</div>

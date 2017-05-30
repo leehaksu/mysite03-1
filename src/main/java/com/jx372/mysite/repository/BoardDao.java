@@ -16,6 +16,10 @@ public class BoardDao {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	public int updateHit( Long no ) {
+		return sqlSession.update( "board.updateHit", no );
+	}
+	
 	public int getTotalCount( String keyword ) {
 		return sqlSession.selectOne( "board.getTotalCount", keyword );
 	}
@@ -24,7 +28,7 @@ public class BoardDao {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put( "keyword", keyword );
-		map.put( "page", page-1 );
+		map.put( "startIndex", (page-1)*size );
 		map.put( "size", size );
 		
 		return sqlSession.selectList( "board.getList", map );

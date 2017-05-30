@@ -3,6 +3,12 @@
 
 <mapper namespace="board">
 	
+	<update id="updateHit" parameterType="long">
+		<![CDATA[
+		update board set hit = hit + 1 where no=#{no }
+		]]>	
+	</update>
+	
 	<select id="getTotalCount" parameterType="string" resultType="integer">
 		<choose>
 			<when test="_parameter == null or _parameter ==''">
@@ -14,7 +20,7 @@
 				<![CDATA[
 				select count(*) 
 				  from board
-				 where (title like '%${keyword }%' or content like '%${keyword  }%') 
+				 where (title like '%${_parameter }%' or content like '%${_parameter  }%') 
 				]]>				
 			</otherwise>
 		</choose>	
@@ -34,7 +40,7 @@
 					from board a, user b
 				   where a.user_no = b.no
 				order by group_no desc, order_no asc
-				   limit #{page }, #{size }				
+				   limit #{startIndex }, #{size }				
 				]]>
 			</when>
 			<otherwise>
@@ -50,7 +56,7 @@
 				   where a.user_no = b.no
 				     and (title like '%${keyword }%' or content like '%${keyword }%')
 				order by group_no desc, order_no asc
-				   limit #{page }, #{size }				
+				   limit #{startIndex }, #{size }				
 				]]>			
 			</otherwise>
 		</choose>
@@ -64,7 +70,7 @@
 				group_no as groupNo,
 				order_no as orderNo,
 				depth,
-				users_no as userNo
+				user_no as userNo
 		   from board
 		  where no = #{no }		
 		]]>		
