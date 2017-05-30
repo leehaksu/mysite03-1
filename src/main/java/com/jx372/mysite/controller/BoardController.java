@@ -136,8 +136,7 @@ public class BoardController {
 	@RequestMapping( value="/reply/{no}" )	
 	public String reply( HttpSession session, @PathVariable( "no" ) Long no, Model model) {
 		//인증 체크
-		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
-		if(  authUser == null ) {
+		if(  session.getAttribute( "authUser" ) == null ) {
 			return "redirect:/user/login";
 		}
 
