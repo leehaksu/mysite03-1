@@ -23,6 +23,17 @@
 			</when>
 			<otherwise>
 				<![CDATA[
+				insert
+				  into board
+				values ( null,
+						 #{title },
+						 #{content },
+						 0,
+						 now(),
+						 #{groupNo },
+						 #{orderNo }, 
+						 #{depth }, 
+						 #{userNo } )				
 				]]>
 			</otherwise>
 		</choose>
@@ -110,9 +121,20 @@
 
 	<update id="updateHit" parameterType="long">
 		<![CDATA[
-		update board set hit = hit + 1 where no=#{no }
+		update board
+		   set hit = hit + 1
+		 where no=#{no }
 		]]>	
 	</update>
+	
+	<update id="updateOrederNo" parameterType="map">
+		<![CDATA[
+		update board
+		   set order_no = order_no + 1
+		 where group_no = #{groupNo }
+		   and order_no >= #{orderNo }
+		]]>	
+	</update>	
 	
 	<select id="getTotalCount" parameterType="string" resultType="integer">
 		<choose>

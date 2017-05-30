@@ -18,6 +18,7 @@
 					<input type="hidden" name="groupNo" value="${boardVo.groupNo }">
 					<input type="hidden" name="orderNo" value="${boardVo.orderNo }">
 					<input type="hidden" name="depth" value="${boardVo.depth }">
+					<input type="hidden" name="p" value="${param.p }" />
 					<input type="hidden" name="kwd" value="${param.kwd }" />
 					<table class="tbl-ex">
 						<tr>

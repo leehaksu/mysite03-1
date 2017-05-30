@@ -121,9 +121,16 @@ public class BoardController {
 		}
 		
 		boardVo.setUserNo( authUser.getNo() );
+		
+		if( boardVo.getGroupNo() != null ) {
+			boardService.increaseGroupOrderNo( boardVo );
+		}
+		
 		boardService.addMessage( boardVo );
 		
-		return "redirect:/board";
+		return	( boardVo.getGroupNo() != null ) ?
+				"redirect:/board?p=" + page + "&kwd=" + WebUtil.encodeURL( keyword, "UTF-8" ) :
+				"redirect:/board";
 	}
 	
 	@RequestMapping( value="/reply/{no}" )	

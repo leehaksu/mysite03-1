@@ -58,6 +58,14 @@ public class BoardDao {
 		return sqlSession.update( "board.updateHit", no );
 	}
 	
+	public int updateOrderNo( Integer groupNo, Integer orderNo ) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put( "groupNo", groupNo );
+		map.put( "orderNo", orderNo );
+		
+		return sqlSession.update( "board.updateOrederNo", map );
+	}
+	
 	public int getTotalCount( String keyword ) {
 		return sqlSession.selectOne( "board.getTotalCount", keyword );
 	}	
