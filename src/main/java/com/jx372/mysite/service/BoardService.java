@@ -28,6 +28,11 @@ public class BoardService {
 		return boardVo;
 	}
 	
+	public boolean deleteMessage( Long boardNo, Long userNo ) {
+		int count = boardDao.delete( boardNo, userNo );
+		return count == 1;
+	}
+	
 	public Map<String, Object> getMessageList( int currentPage, String keyword ){
 		
 		//1. 페이징을 위한 기본 데이터 계산

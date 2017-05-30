@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jx372.mysite.service.BoardService;
 import com.jx372.mysite.vo.BoardVo;
+import com.jx372.mysite.vo.UserVo;
+import com.jx372.web.util.WebUtil;
 
 @Controller
 @RequestMapping( "/board" )
@@ -40,6 +42,23 @@ public class BoardController {
 		model.addAttribute( "boardVo", boardVo );
 		
 		return "board/view";
+	}
+	
+	@RequestMapping( "/delete/{no}" )
+	public String delete(
+		HttpSession session, 
+		@PathVariable( "no" ) Long boardNo,
+		@RequestParam( value="p", required=true, defaultValue="1") Integer page,
+		@RequestParam( value="kwd", required=true, defaultValue="") String keyword ) {
+		//인증 체크
+		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
+		if(  authUser == null ) {
+			return "redirect:/user/login";
+		}
+		
+		boardService.deleteMessage( boardNo, authUser.getNo() );
+		
+		return "redirect:/board?p=" + page + "&kwd=" + WebUtil.encodeURL( keyword, "UTF-8" );
 	}
 	
 	@RequestMapping( value="/write", method=RequestMethod.GET )	
