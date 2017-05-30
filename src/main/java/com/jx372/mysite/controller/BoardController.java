@@ -35,26 +35,15 @@ public class BoardController {
 	}
 	
 	@RequestMapping( "/view/{no}" )
-	public String view(
-		@PathVariable( "no" ) Long no,
-		@RequestParam( value="p", required=true, defaultValue="1") Integer page,
-		@RequestParam( value="kwd", required=true, defaultValue="") String keyword,
-		Model model ) {
-		
+	public String view( @PathVariable( "no" ) Long no, Model model ) {
 		BoardVo boardVo = boardService.getMessage( no );
-	
-		model.addAttribute( "page", page );
-		model.addAttribute( "keyword", keyword );
 		model.addAttribute( "boardVo", boardVo );
 		
 		return "board/view";
 	}
 	
 	@RequestMapping( value="/write", method=RequestMethod.GET )	
-	public String write(
-		HttpSession session, 	
-		@RequestParam( value="p", required=true, defaultValue="1") Integer page,
-		@RequestParam( value="kwd", required=true, defaultValue="") String keyword) {
+	public String write( HttpSession session ) {
 		//인증 체크
 		if( session.getAttribute( "authUser" ) == null ) {
 			return "redirect:/user/login";
