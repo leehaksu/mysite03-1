@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.jx372.mysite.service.BoardService;
 import com.jx372.mysite.vo.BoardVo;
 import com.jx372.mysite.vo.UserVo;
+import com.jx372.security.Auth;
 import com.jx372.web.util.WebUtil;
 
 @Controller
@@ -97,13 +98,9 @@ public class BoardController {
 				"&kwd=" + WebUtil.encodeURL( keyword, "UTF-8" );
 	}
 	
+	@Auth
 	@RequestMapping( value="/write", method=RequestMethod.GET )	
-	public String write( HttpSession session ) {
-		//인증 체크
-		if( session.getAttribute( "authUser" ) == null ) {
-			return "redirect:/user/login";
-		}
-		
+	public String write() {
 		return "board/write";
 	}
 	
@@ -132,12 +129,6 @@ public class BoardController {
 				"redirect:/board?p=" + page + "&kwd=" + WebUtil.encodeURL( keyword, "UTF-8" ) :
 				"redirect:/board";
 	}
-	
-	
-	
-	
-	
-	
 	
 	@RequestMapping( value="/reply/{no}" )	
 	public String reply( HttpSession session, @PathVariable( "no" ) Long no, Model model) {
