@@ -62,5 +62,4 @@ public class UserController {
 		
 		return "redirect:/user/modify?result=success";
 	}	
-
 }
