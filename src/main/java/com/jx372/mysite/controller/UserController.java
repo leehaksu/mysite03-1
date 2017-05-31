@@ -24,12 +24,6 @@ public class UserController {
 	public String join(){
 		return "user/join";
 	}
-
-//	@ResponseBody
-//	@RequestMapping( value="/join", method=RequestMethod.POST )
-//	public String join( @RequestBody String requestBody ){
-//		return requestBody;
-//	}
 	
 	@RequestMapping( value="/join", method=RequestMethod.POST )
 	public String join( @ModelAttribute UserVo userVo ){
@@ -41,14 +35,7 @@ public class UserController {
 	public String login() {
 		return "user/login";
 	}
-	
-	@RequestMapping( "/logout" )
-	public String logout( HttpSession session ) {
-		session.removeAttribute( "authUser" );
-		session.invalidate();
-		return "redirect:/";
-	}
-	
+
 	@RequestMapping( "/joinsuccess" )
 	public String joinsuccess(){
 		return "user/joinsuccess";

@@ -47,6 +47,10 @@
     		<bean class="com.jx372.security.AuthLoginInterceptor" />
         </mvc:interceptor>
         <mvc:interceptor>
+        	<mvc:mapping path="/user/logout" /> 
+    		<bean class="com.jx372.security.AuthLogoutInterceptor" />
+        </mvc:interceptor>        
+        <mvc:interceptor>
         	<mvc:mapping path="/**" />
         	<mvc:exclude-mapping path="/user/auth"/>
         	<mvc:exclude-mapping path="/user/logout"/>
