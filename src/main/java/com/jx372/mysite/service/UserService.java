@@ -12,6 +12,11 @@ public class UserService {
 	@Autowired
 	private UserDao userDao;
 	
+	public boolean existEmail( String email ) {
+		UserVo userVo = userDao.get( email );
+		return userVo != null;
+	}
+	
 	public void join( UserVo userVo ) {
 		//1.DB에 사용정보 저장
 		userDao.insert( userVo );

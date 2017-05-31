@@ -133,6 +133,12 @@ public class BoardController {
 				"redirect:/board";
 	}
 	
+	
+	
+	
+	
+	
+	
 	@RequestMapping( value="/reply/{no}" )	
 	public String reply( HttpSession session, @PathVariable( "no" ) Long no, Model model) {
 		//인증 체크
