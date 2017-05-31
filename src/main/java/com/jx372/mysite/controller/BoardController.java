@@ -46,37 +46,34 @@ public class BoardController {
 		return "board/view";
 	}
 	
+	@Auth
 	@RequestMapping( "/delete/{no}" )
 	public String delete(
 		HttpSession session, 
 		@PathVariable( "no" ) Long boardNo,
 		@RequestParam( value="p", required=true, defaultValue="1") Integer page,
 		@RequestParam( value="kwd", required=true, defaultValue="") String keyword ) {
-		//인증 체크
+
 		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
-		if(  authUser == null ) {
-			return "redirect:/user/login";
-		}
-		
+
 		boardService.deleteMessage( boardNo, authUser.getNo() );
 		
 		return "redirect:/board?p=" + page + "&kwd=" + WebUtil.encodeURL( keyword, "UTF-8" );
 	}
 	
+	@Auth
 	@RequestMapping( value="/modify/{no}" )	
 	public String modify( HttpSession session, @PathVariable( "no" ) Long no, Model model) {
-		//인증 체크
-		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
-		if(  authUser == null ) {
-			return "redirect:/user/login";
-		}
 
+		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
+		
 		BoardVo boardVo = boardService.getMessage(no, authUser.getNo() );
 		model.addAttribute( "boardVo", boardVo );
 		
 		return "board/modify";
 	}
 
+	@Auth
 	@RequestMapping( value="/modify", method=RequestMethod.POST )	
 	public String modify(
 		HttpSession session,
@@ -84,12 +81,7 @@ public class BoardController {
 		@RequestParam( value="p", required=true, defaultValue="1") Integer page,
 		@RequestParam( value="kwd", required=true, defaultValue="") String keyword ) {
 		
-		//인증 체크
 		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
-		if(  authUser == null ) {
-			return "redirect:/user/login";
-		}
-		
 		boardVo.setUserNo( authUser.getNo() );
 		boardService.modifyMessage( boardVo );
 		
@@ -103,7 +95,8 @@ public class BoardController {
 	public String write() {
 		return "board/write";
 	}
-	
+
+	@Auth
 	@RequestMapping( value="/write", method=RequestMethod.POST )	
 	public String write(
 		HttpSession session,
@@ -111,31 +104,22 @@ public class BoardController {
 		@RequestParam( value="p", required=true, defaultValue="1") Integer page,
 		@RequestParam( value="kwd", required=true, defaultValue="") String keyword ) {
 		
-		//인증 체크
 		UserVo authUser = (UserVo)session.getAttribute( "authUser" ); 
-		if(  authUser == null ) {
-			return "redirect:/user/login";
-		}
-		
 		boardVo.setUserNo( authUser.getNo() );
 		
 		if( boardVo.getGroupNo() != null ) {
 			boardService.increaseGroupOrderNo( boardVo );
 		}
-		
 		boardService.addMessage( boardVo );
 		
 		return	( boardVo.getGroupNo() != null ) ?
 				"redirect:/board?p=" + page + "&kwd=" + WebUtil.encodeURL( keyword, "UTF-8" ) :
 				"redirect:/board";
 	}
-	
+
+	@Auth
 	@RequestMapping( value="/reply/{no}" )	
-	public String reply( HttpSession session, @PathVariable( "no" ) Long no, Model model) {
-		//인증 체크
-		if(  session.getAttribute( "authUser" ) == null ) {
-			return "redirect:/user/login";
-		}
+	public String reply( @PathVariable( "no" ) Long no, Model model) {
 
 		BoardVo boardVo = boardService.getMessage( no );
 		boardVo.setOrderNo( boardVo.getOrderNo() + 1 );
@@ -145,5 +129,4 @@ public class BoardController {
 		
 		return "board/reply";
 	}	
-
 }
