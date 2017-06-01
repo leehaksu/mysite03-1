@@ -31,6 +31,11 @@
 
 		</mvc:message-converters>
 		
+		<!-- Controller의 Handler의 Argument Resolver 등록 -->
+		<mvc:argument-resolvers>
+			<bean class="com.jx372.security.AuthUserHandlerMethodArgumentResolver" />
+		</mvc:argument-resolvers>
+		
 	</mvc:annotation-driven>
 
 	<!-- 서블릿 컨테이너의 디폴트 서블릿 위임 핸들러 -->

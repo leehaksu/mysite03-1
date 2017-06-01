@@ -1,7 +1,5 @@
 package com.jx372.mysite.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.jx372.mysite.service.UserService;
 import com.jx372.mysite.vo.UserVo;
 import com.jx372.security.Auth;
+import com.jx372.security.AuthUser;
 
 @Controller
 @RequestMapping( "/user" )
@@ -43,9 +42,9 @@ public class UserController {
 	
 	@Auth
 	@RequestMapping( value="/modify", method=RequestMethod.GET )
-	public String modify( HttpSession session, Model model ){
-
-		UserVo authUser = (UserVo)session.getAttribute( "authUser" );
+	public String modify( 
+		@AuthUser UserVo authUser,	
+		Model model ){
 		
 		UserVo userVo = userService.getUser( authUser.getNo() );
 		model.addAttribute( "userVo", userVo );
@@ -54,12 +53,11 @@ public class UserController {
 	
 	@Auth
 	@RequestMapping( value="/modify", method=RequestMethod.POST )
-	public String modify( HttpSession session, @ModelAttribute UserVo userVo ){
+	public String modify( @AuthUser UserVo authUser, @ModelAttribute UserVo userVo ){
 
-		UserVo authUser = (UserVo)session.getAttribute( "authUser" );
 		userVo.setNo( authUser.getNo() );
 		userService.modifyUser( userVo );
 		
 		return "redirect:/user/modify?result=success";
-	}	
+	}
 }
