@@ -12,6 +12,7 @@ import com.jx372.mysite.vo.UserVo;
 import com.jx372.security.Auth;
 import com.jx372.security.AuthUser;
 
+
 @Controller
 @RequestMapping( "/user" )
 public class UserController {

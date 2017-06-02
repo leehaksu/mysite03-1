@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.jx372.security.Auth.Role;
+
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
@@ -21,15 +23,21 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		}
 		
-		//2. @Auth가 붙어 있는 지 확인
+		//2. 메소드에 @Auth가 붙어 있는 지 확인
 		Auth auth = ((HandlerMethod)handler).getMethodAnnotation( Auth.class );
 		
-		//3. @Auth 가 붙어 있지 않으면
+		//3. 메소드에 @Auth 가 붙어 있지 않으면
 		if( auth == null ) {
-			return true;
+			
+			//4. Class 에 붙어 있는 지 확인
+			//auth = ((HandlerMethod)handler).dwdqwdw();
+			if( auth == null ) {
+				return true;
+			}			
 		}
 		
-		//4. 접근 제어
+		
+		//5. 접근 제어
 		HttpSession session = request.getSession();
 		if( session == null ) {
 			response.sendRedirect( request.getContextPath() + "/user/login" );
@@ -41,7 +49,15 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			return false;
 		}
 
-		// 5. 인증된 사용자
+		
+		// 6. 롤체크
+		Auth.Role role = auth.value();
+		if( role == Auth.Role.ADMIN && 
+			authUser.getRole().equals( "ADMIN" ) == false ) {
+			return false;
+		}
+		
+		
 		return true;
 	}
 }

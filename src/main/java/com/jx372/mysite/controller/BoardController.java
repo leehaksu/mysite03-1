@@ -45,7 +45,6 @@ public class BoardController {
 		return "board/view";
 	}
 	
-	@Auth
 	@RequestMapping( "/delete/{no}" )
 	public String delete(
 		@AuthUser UserVo authUser, 
