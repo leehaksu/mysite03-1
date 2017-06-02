@@ -30,7 +30,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		if( auth == null ) {
 			
 			//4. Class 에 붙어 있는 지 확인
-			//auth = ((HandlerMethod)handler).dwdqwdw();
+			auth = ((HandlerMethod)handler).
+					getMethod().
+					getDeclaringClass().
+					getAnnotation( Auth.class );
 			if( auth == null ) {
 				return true;
 			}			
@@ -52,10 +55,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		
 		// 6. 롤체크
 		Auth.Role role = auth.value();
-		if( role == Auth.Role.ADMIN && 
-			authUser.getRole().equals( "ADMIN" ) == false ) {
-			return false;
-		}
+//		if( role == Auth.Role.ADMIN && 
+//			authUser.getRole().equals( "ADMIN" ) == false ) {
+//			return false;
+//		}
 		
 		
 		return true;
