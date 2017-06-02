@@ -12,7 +12,7 @@
 	
 	<select id="getByEmailAndPassword" resultType="uservo" parameterType="map">
 		<![CDATA[
-		select no, name 
+		select no, name, role 
 		  from user 
 		 where email=#{email }
 		   and password = password(#{password })

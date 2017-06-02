@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.jx372.security.Auth.Role;
+import com.jx372.mysite.vo.UserVo;
 
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
@@ -18,49 +18,53 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		Object handler)
 		throws Exception {
 		
-		//1. handler 종류
+		//1. handler 종류 확인
 		if( handler instanceof HandlerMethod == false ) {
 			return true;
 		}
 		
-		//2. 메소드에 @Auth가 붙어 있는 지 확인
-		Auth auth = ((HandlerMethod)handler).getMethodAnnotation( Auth.class );
+		//2. Casting
+		HandlerMethod handlerMethod = (HandlerMethod)handler;
+				
+		//2. Method의 @Auth 받아오기
+		Auth auth = handlerMethod.getMethodAnnotation( Auth.class );
 		
-		//3. 메소드에 @Auth 가 붙어 있지 않으면
+		//3. Method에 @Auth가 붙어 있지 않으면, Class(Type)의 @Auth 받아오기  
 		if( auth == null ) {
-			
-			//4. Class 에 붙어 있는 지 확인
-			auth = ((HandlerMethod)handler).
-					getMethod().
-					getDeclaringClass().
-					getAnnotation( Auth.class );
-			if( auth == null ) {
-				return true;
-			}			
-		}
-		
-		
-		//5. 접근 제어
-		HttpSession session = request.getSession();
-		if( session == null ) {
-			response.sendRedirect( request.getContextPath() + "/user/login" );
-			return false;
-		}
-		
-		if( session.getAttribute( "authUser" ) == null ) {
-			response.sendRedirect( request.getContextPath() + "/user/login" );
-			return false;
+			auth = handlerMethod.getMethod().getDeclaringClass().getAnnotation( Auth.class );
 		}
 
+		//4. Method와 Type에 @Auth가 없음 
+		if( auth == null ) {
+			return true;
+		}			
 		
-		// 6. 롤체크
+		//5. 인증 여부 확인
+		HttpSession session = request.getSession();
+		UserVo authUser = null;
+		
+		if( session != null ) {
+			authUser = (UserVo)session.getAttribute( "authUser" );
+		}
+		
+		if( authUser == null ) {
+			response.sendRedirect( request.getContextPath() + "/user/login" );
+			return false;
+		}
+		
+		// 6. USER Role 접근
 		Auth.Role role = auth.value();
-//		if( role == Auth.Role.ADMIN && 
-//			authUser.getRole().equals( "ADMIN" ) == false ) {
-//			return false;
-//		}
+		if( role == Auth.Role.USER ) {
+			return true;
+		}
 		
+		//7. ADMIN Role 접근 ( ADMIN 권한이 없는 사용자이면 메인으로...)
+		if( authUser.getRole().equals( "ADMIN" ) == false ) {
+			response.sendRedirect( request.getContextPath() );
+			return false;
+		}
 		
+		//8. ADMIN Role 접근 허용
 		return true;
 	}
 }
