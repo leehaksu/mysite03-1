@@ -39,7 +39,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		}			
 		
-		//5. 인증 여부 확인
+		//5. @Auth가 있기 때문에 인증 여부 확인 필요
 		HttpSession session = request.getSession();
 		UserVo authUser = null;
 		
@@ -51,14 +51,17 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			response.sendRedirect( request.getContextPath() + "/user/login" );
 			return false;
 		}
-		
-		// 6. USER Role 접근
+
+		// 6. Role 가져오기
 		Auth.Role role = auth.value();
+
+		// 7. USER Role 접근이면 인증만 되어있으면 허용 
 		if( role == Auth.Role.USER ) {
 			return true;
 		}
 		
-		//7. ADMIN Role 접근 ( ADMIN 권한이 없는 사용자이면 메인으로...)
+		//8. ADMIN Role 접근 
+		//   ADMIN 권한이 없는 사용자이면 메인으로...
 		if( authUser.getRole().equals( "ADMIN" ) == false ) {
 			response.sendRedirect( request.getContextPath() );
 			return false;
