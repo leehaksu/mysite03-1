@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jx372.mysite.service.GuestbookService;
 import com.jx372.mysite.vo.GuestbookVo;
+import com.jx372.security.Auth;
 
 @Controller
 @RequestMapping( "/guestbook" )

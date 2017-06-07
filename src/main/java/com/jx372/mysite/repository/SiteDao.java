@@ -15,4 +15,8 @@ public class SiteDao {
 	public SiteVo get() {
 		return sqlSession.selectOne( "site.get" );
 	}
+	
+	public int update( SiteVo siteVo ) {
+		return sqlSession.update( "site.update", siteVo );
+	}
 }

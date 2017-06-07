@@ -15,4 +15,8 @@ public class SiteService {
 	public SiteVo getSiteInformation() {
 		return siteDao.get();
 	}
+	
+	public boolean updateSiteInformation( SiteVo siteVo ) {
+		return siteDao.update( siteVo ) == 1;
+	}
 }

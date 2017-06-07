@@ -25,6 +25,7 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 	
+
 	@RequestMapping( "" )
 	public String index(
 		@RequestParam( value="p", required=true, defaultValue="1") Integer page,

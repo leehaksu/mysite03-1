@@ -7,7 +7,7 @@
 <head>
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link href="/mysite03/assets/css/admin/main.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath }/assets/css/admin/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="container">
@@ -15,19 +15,19 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-form">
-					<form method="post" action="">
+					<form method="post" action="${pageContext.request.contextPath }/admin/main/update" enctype="multipart/form-data">
 						<label class="block-label" for="title">사이트 타이틀</label>
-						<input id="title" name="title" type="text" value="">
+						<input id="title" name="title" type="text" value="${siteVo.title }">
 						
 						<label class="block-label" for="welcomeMessage">환영 메세지</label>
-						<input id="welcomeMessage" name="welcomeMessage" type="text" value="">
+						<input id="welcomeMessage" name="welcomeMessage" type="text" value="${siteVo.welcomeMessage }">
 
 						<label class="block-label">프로필 이미지</label>
-						<img id="profile" src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-1/p160x160/936089_1019758748039064_7187347097932848216_n.jpg?oh=9f25131398604088fc57945de6872b2e&oe=59A697B2">
+						<img id="profile" src="${pageContext.request.contextPath }/${siteVo.profileURL }">
 						<input type="file" name="file1">
 
 						<label class="block-label">사이트 설명</label>
-						<textarea name="description"></textarea>
+						<textarea name="description">${siteVo.description }</textarea>
 						
 						<input type="submit" value="변경" />
 					</form>
