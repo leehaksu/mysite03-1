@@ -13,10 +13,6 @@ import com.jx372.mysite.service.SiteService;
 import com.jx372.mysite.vo.SiteVo;
 import com.jx372.security.Auth;
 
-//@Auth( role={ "ADMIN", "USER", "SYS" }, test=10 )
-//@Auth( { "ADMIN", "USER", "SYS" } )
-//@Auth( "Admin" )
-
 @Auth( value=Auth.Role.ADMIN )
 @Controller
 @RequestMapping( "/admin" )
