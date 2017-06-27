@@ -14,8 +14,66 @@
 <script>
 window.addEventListener( "load", function(){
 
+	document.getElementById( "join-form" ).
+	onsubmit = function(){
+		//1. 이름
+		var inputName = document.getElementById( "name" );
+		if( inputName.value === "" ) {
+			alert( "이름은 필수 항목입니다." );
+			inputName.focus();
+			return false;
+		}
+
+		//2. 이메일
+		var inputEmail = document.getElementById( "email" );
+		if( inputEmail.value === "" ) {
+			alert( "이메일은 필수 항목입니다." );
+			inputEmail.focus();
+			return false;
+		}
+		
+		//3. 이메일 중복 체크 여부
+		var imageCheck = document.getElementById( "check-image" );
+		if( imageCheck.style.display === "none" ) {
+			alert( "이메일 중복 체크를 해 주세요." );
+			return false;
+		}
+		
+		//4. 비밀번호
+		var inputPassword = document.getElementById( "password" );
+		if( inputPassword.value === "" ) {
+			alert( "비밀번호는 필수 항목입니다." );
+			inputPassword.focus();
+			return false;
+		}
+		
+		//5. 약관동의
+		var checkAgree = document.getElementById( "agree-prov" );
+		if( checkAgree.checked === false ) {
+			alert( "가입 약관에 동의 하셔야 합니다." );
+			checkAgree.focus();
+			return false;
+		}		
+
+		// valid!
+		return true;
+	}
+	
+	document.getElementById( "email" ).
+	addEventListener( "change", function(){
+		var imageCheck = document.getElementById( "check-image" );
+		var buttonCheck = document.getElementById( "check-button" );
+		
+		imageCheck.style.display = "none";
+		buttonCheck.style.display = "";
+	} );
+	
 	document.getElementById( "check-button" ).
 	addEventListener( "click", function(){
+		var email = document.getElementById( "email" ).value;
+		if( email === "" ) {
+			return;
+		}
 		//ajax 통신
 		$.ajax( {
 			url : "/mysite03/user/api/checkemail?email=" + email,
@@ -26,10 +84,16 @@ window.addEventListener( "load", function(){
 				console.log( response );
 				if( response.data == true ) {
 					alert( "이미 존재하는 이메일 입니다. 다른 이메일을 사용해 주세요." );
-					// email 입력 창에 포커싱
+					// email 입력 창 비우고 포커싱
+					var inputEmail = document.getElementById( "email" )
+					inputEmail.value = "";
+					inputEmail.focus();
 				} else {
-					console.log( "사용 가능한 이메일 입니다." );
+					var imageCheck = document.getElementById( "check-image" );
+					var buttonCheck = document.getElementById( "check-button" );
 					
+					imageCheck.style.display = "";
+					buttonCheck.style.display = "none";
 				}
 			},
 			error: function( jqXHR, status, error ){
@@ -37,13 +101,9 @@ window.addEventListener( "load", function(){
 			}
 		} );	
 	} );
-	
-	
-	
-	
+
+
 });	
-
-
 </script>
 </head>
 <body>
@@ -75,14 +135,14 @@ window.addEventListener( "load", function(){
 
 					<label class="block-label" for="email">이메일</label>
 					<form:input path="email"/>
-					<img src="${pageContext.request.contextPath }/assets/images/email-check.png" style="display:none"/>
+					<img id="check-image" src="${pageContext.request.contextPath }/assets/images/email-check.png" style="display:none"/>
 					<input id="check-button" type="button" value="중복체크" style="display:;">
 					<p style="margin:0; padding:0; color:red; text-align:left">
 						<form:errors path="email" />		
 					</p>
 					
 					<label class="block-label">패스워드</label>
-					<input name="password" type="password" value="">
+					<form:password path="password" />
 					
 					<fieldset>
 						<legend>성별</legend>
