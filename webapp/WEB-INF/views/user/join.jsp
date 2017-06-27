@@ -12,13 +12,10 @@
 <link href="${pageContext.servletContext.contextPath }/assets/css/user.css" rel="stylesheet" type="text/css">
 <script src="${pageContext.servletContext.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script>
-$(function(){
-	$( "#check-button" ).click( function(){
-		var email = $( "#email" ).val();
-		if( email == "" ) {
-			return;
-		}
-		
+window.addEventListener( "load", function(){
+
+	document.getElementById( "check-button" ).
+	addEventListener( "click", function(){
 		//ajax 통신
 		$.ajax( {
 			url : "/mysite03/user/api/checkemail?email=" + email,
@@ -26,18 +23,27 @@ $(function(){
 			dataType: "json",
 			data: "",
 			success: function( response ){
+				console.log( response );
 				if( response.data == true ) {
-					alert( "이미 존재하는 이메일 입니다." );
+					alert( "이미 존재하는 이메일 입니다. 다른 이메일을 사용해 주세요." );
+					// email 입력 창에 포커싱
 				} else {
-					alert( "사용 가능한 이메일 입니다." );
+					console.log( "사용 가능한 이메일 입니다." );
+					
 				}
 			},
 			error: function( jqXHR, status, error ){
 				console.error( status + " : " + error );
 			}
-		} );
-	});
+		} );	
+	} );
+	
+	
+	
+	
 });	
+
+
 </script>
 </head>
 <body>
@@ -69,10 +75,11 @@ $(function(){
 
 					<label class="block-label" for="email">이메일</label>
 					<form:input path="email"/>
+					<img src="${pageContext.request.contextPath }/assets/images/email-check.png" style="display:none"/>
+					<input id="check-button" type="button" value="중복체크" style="display:;">
 					<p style="margin:0; padding:0; color:red; text-align:left">
 						<form:errors path="email" />		
 					</p>
-					<input id="check-button" type="button" value="중복체크">
 					
 					<label class="block-label">패스워드</label>
 					<input name="password" type="password" value="">
