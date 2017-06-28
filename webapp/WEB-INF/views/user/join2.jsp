@@ -12,104 +12,98 @@
 <link href="${pageContext.servletContext.contextPath }/assets/css/user.css" rel="stylesheet" type="text/css">
 <script src="${pageContext.servletContext.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script>
-var FormValidator = {
+window.addEventListener( "load", function(){
 
-	$imageCheck: null,
-	$buttonCheckEmail: null,
-	$inputTextEmail: null,
+	document.getElementById( "join-form" ).
+	onsubmit = function(){
+		//1. 이름
+		var inputName = document.getElementById( "name" );
+		if( inputName.value === "" ) {
+			alert( "이름은 필수 항목입니다." );
+			inputName.focus();
+			return false;
+		}
+
+		//2. 이메일
+		var inputEmail = document.getElementById( "email" );
+		if( inputEmail.value === "" ) {
+			alert( "이메일은 필수 항목입니다." );
+			inputEmail.focus();
+			return false;
+		}
+		
+		//3. 이메일 중복 체크 여부
+		var imageCheck = document.getElementById( "check-image" );
+		if( imageCheck.style.display === "none" ) {
+			alert( "이메일 중복 체크를 해 주세요." );
+			return false;
+		}
+		
+		//4. 비밀번호
+		var inputPassword = document.getElementById( "password" );
+		if( inputPassword.value === "" ) {
+			alert( "비밀번호는 필수 항목입니다." );
+			inputPassword.focus();
+			return false;
+		}
+		
+		//5. 약관동의
+		var checkAgree = document.getElementById( "agree-prov" );
+		if( checkAgree.checked === false ) {
+			alert( "가입 약관에 동의 하셔야 합니다." );
+			checkAgree.focus();
+			return false;
+		}		
+
+		// valid!
+		return true;
+	}
 	
-	init: function() {
-		this.$imageCheck = $( "#check-image" );
-		this.$buttonCheckEmail = $( "#check-button" );
-		this.$inputTextEmail = $( "#email" );
+	document.getElementById( "email" ).
+	addEventListener( "change", function(){
+		var imageCheck = document.getElementById( "check-image" );
+		var buttonCheck = document.getElementById( "check-button" );
 		
-		this.$inputTextEmail.change( this.onEmailInputTextChanged.bind( this ) );
-		this.$buttonCheckEmail.click( this.onCheckEmailButtonClicked.bind( this ) );
-		$( "#join-form" ).submit( this.onFormSubmit.bind( this ) );		
-	},
-	onEmailInputTextChanged: function() {
-		this.$imageCheck.hide();
-		this.$buttonCheckEmail.show();		
-	},	
-	onCheckEmailButtonClicked: function( event ) {
-		
-		console.log( event.currentTarget );
-		
-		var email = this.$inputTextEmail.val();
+		imageCheck.style.display = "none";
+		buttonCheck.style.display = "";
+	} );
+	
+	document.getElementById( "check-button" ).
+	addEventListener( "click", function(){
+		var email = document.getElementById( "email" ).value;
 		if( email === "" ) {
 			return;
 		}
-		
 		//ajax 통신
 		$.ajax( {
 			url : "/mysite03/user/api/checkemail?email=" + email,
 			type: "get",
 			dataType: "json",
 			data: "",
-			success: this.onCheckEmailAjaxSuccess.bind( this ),
-			error: this.onCheckEmailAjaxError.bind( this )
+			success: function( response ){
+				console.log( response );
+				if( response.data == true ) {
+					alert( "이미 존재하는 이메일 입니다. 다른 이메일을 사용해 주세요." );
+					// email 입력 창 비우고 포커싱
+					var inputEmail = document.getElementById( "email" )
+					inputEmail.value = "";
+					inputEmail.focus();
+				} else {
+					var imageCheck = document.getElementById( "check-image" );
+					var buttonCheck = document.getElementById( "check-button" );
+					
+					imageCheck.style.display = "";
+					buttonCheck.style.display = "none";
+				}
+			},
+			error: function( jqXHR, status, error ){
+				console.error( status + " : " + error );
+			}
 		} );	
-	},
-	onCheckEmailAjaxSuccess: function( response ) {
-		console.log( response );
-		if( response.data == true ) {
-			alert( "이미 존재하는 이메일 입니다. 다른 이메일을 사용해 주세요." );
-			// email 입력 창 비우고 포커싱
-			this.$inputTextEmail.val( "" ).focus();
-		} else {
-			this.$imageCheck.show();
-			this.$buttonCheckEmail.hide();
-		}		
-	},
-	onCheckEmailAjaxError: function( jqXHR, status, error ){
-		console.error( status + " : " + error );
-	},
-	onFormSubmit: function() {
-		//1. 이름
-		var $inputTextName = $( "#name" );
-		if( $inputTextName.val() === "" ) {
-			alert( "이름은 필수 항목입니다." );
-			$inputTextName.focus();
-			return false;
-		}
+	} );
 
-		var $email = $( "#email" );
-		if( this.$inputTextEmail.val() === "" ) {
-			alert( "이메일은 필수 항목입니다." );
-			this.$inputTextEmail.focus();
-			return false;
-		}
-		
-		//3. 이메일 중복 체크 여부
-		if( this.$imageCheck.is( ":visible" ) === false ) {
-			alert( "이메일 중복 체크를 해 주세요." );
-			return false;
-		}
-		
-		//4. 비밀번호
-		var $inputPassword = $( "#password" );
-		if( $inputPassword.val() === "" ) {
-			alert( "비밀번호는 필수 항목입니다." );
-			$inputPassword.focus();
-			return false;
-		}
-		
-		//5. 약관동의
-		var $inputCheckBoxAgree = $( "#agree-prov" );
-		if( $inputCheckBoxAgree.is( ":checked" ) === false ) {
-			alert( "가입 약관에 동의 하셔야 합니다." );
-			$inputCheckBoxAgree.focus();
-			return false;
-		}		
 
-		// valid!
-		return false;				
-	}
-}
-
-$(function(){
-	FormValidator.init();
-});
+});	
 </script>
 </head>
 <body>
