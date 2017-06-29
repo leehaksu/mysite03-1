@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jx372.mysite.dto.JSONResult;
@@ -20,8 +21,9 @@ public class GuestbookController {
 	
 	@ResponseBody
 	@RequestMapping( "/list" )
-	public JSONResult list() {
-		List<GuestbookVo> list = guestbookService.getMessageList();
+	public JSONResult list( 
+		@RequestParam( value="sno", required=true, defaultValue="0" ) Long startNo ) {
+		List<GuestbookVo> list = guestbookService.getMessageList( startNo );
 		return JSONResult.success( list );
 	}
 }

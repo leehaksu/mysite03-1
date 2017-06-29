@@ -18,6 +18,10 @@ public class GuestbookService {
 		return guestbookDao.getList();
 	}
 	
+	public List<GuestbookVo> getMessageList( Long startNo ) {
+		return guestbookDao.getList( startNo );
+	}	
+	
 	public boolean deleteMessage( GuestbookVo vo ){
 		return 1 == guestbookDao.delete( vo );
 	}

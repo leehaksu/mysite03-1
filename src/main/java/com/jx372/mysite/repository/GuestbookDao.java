@@ -19,6 +19,11 @@ public class GuestbookDao {
 		return list;
 	}
 	
+	public List<GuestbookVo> getList( Long startNo ) {
+		List<GuestbookVo> list = sqlSession.selectList( "guestbook.getList2", startNo );
+		return list;
+	}	
+	
 	public int delete( GuestbookVo vo ) {
 		int count = sqlSession.delete( "guestbook.delete", vo );
 		return count;

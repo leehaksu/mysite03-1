@@ -14,6 +14,25 @@
 	  	]]>
 	</select>
 	
+	<select id="getList2" resultType="guestbookvo" parameterType="long">
+		<![CDATA[			
+		  select no, 
+		         name, 
+		         message, 
+		         date_format(reg_date, '%Y-%m-%d') as regDate
+		    from guestbook
+		]]>    
+		<if test="_parameter > 0">
+			<![CDATA[
+			where no < #{_parameter}   
+			]]>    
+		</if>
+		<![CDATA[   
+	  	order by no desc
+	  	   limit 0, 5	
+	  	]]>
+	</select>	
+	
 	<insert id="insert" parameterType="guestbookvo">
 		<![CDATA[
 		 insert 
