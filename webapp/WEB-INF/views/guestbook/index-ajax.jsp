@@ -52,9 +52,11 @@
 						</p>
 						<a href='' data-no=''>삭제</a> 
 					</li>
-					
-									
 				</ul>
+				
+				<div style="margin:20px 0; text-align:center">
+					<button style="padding:10px 20px">다음</button>
+				</div>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/include/navigation.jsp">
