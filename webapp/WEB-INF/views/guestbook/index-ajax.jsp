@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath }/assets/css/guestbook-ajax.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script>
+var isEnd = false;
+
 var render = function( vo ) {
 	// 상용 app에서는 template library 를 사용한다. ex) ejs, leaf
 	var html = 
@@ -22,32 +24,50 @@ var render = function( vo ) {
 	$( "#list-guestbook" ).append( html );	
 }
 
+var fetchList = function(){
+	
+	if( isEnd === true ) {
+		return;
+	}
+	
+	var startNo = $( "#list-guestbook li" ).last().data( "no" ) || 0;
+	$.ajax( {
+		url : "${pageContext.request.contextPath }/guestbook/api/list?sno=" + startNo,
+		type: "get",
+		dataType: "json",
+		data: "",
+		//contentType: 'application/json', //JSON Type으로 데이터를 보낼 때,
+		success: function( response ){
+			if(response.result === "fail"){
+				console.error( response.message );
+				return;
+			}
+			
+			// detect end
+			if( response.data.length < 5 ){
+				isEnd = true;
+				$( "#btn-next" ).prop( "disabled", true );
+			}
+				
+			//rendering
+			$.each( response.data, function( index, vo ){
+				render( vo );
+			} );
+		},
+		error: function( jqXHR, status, e ){
+			console.error( status + " : " + e );
+		}
+	} );	
+}
+
 $(function(){
 	
 	$( "#btn-next" ).click( function(){
-		$.ajax( {
-			url : "${pageContext.request.contextPath }/guestbook/api/list?sno=0",
-			type: "get",
-			dataType: "json",
-			data: "",
-			//contentType: 'application/json', //JSON Type으로 데이터를 보낼 때,
-			success: function( response ){
-				if(response.result === "fail"){
-					console.error( response.message );
-					return;
-				}
-				
-				//rendering
-				$.each( response.data, function( index, vo ){
-					render( vo );
-				} );
-			},
-			error: function( jqXHR, status, e ){
-				console.error( status + " : " + e );
-			}
-		} );
+		fetchList();
 	});
 	
+	//최초 리스트 가져오기
+	fetchList();
 });
 </script>
 </head>
