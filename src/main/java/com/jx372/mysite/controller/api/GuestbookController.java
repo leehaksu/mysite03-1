@@ -22,6 +22,13 @@ public class GuestbookController {
 	private GuestbookService guestbookService;
 	
 	@ResponseBody
+	@RequestMapping( value="/delete", method=RequestMethod.POST )
+	public JSONResult delete( @ModelAttribute GuestbookVo vo ){
+		boolean result = guestbookService.deleteMessage( vo );
+		return JSONResult.success( result ? vo.getNo() : -1 );
+	}
+	
+	@ResponseBody
 	@RequestMapping( "/list" )
 	public JSONResult list( 
 		@RequestParam( value="sno", required=true, defaultValue="0" ) Long startNo ) {

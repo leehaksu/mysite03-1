@@ -15,14 +15,33 @@
 	text-align:center
 }
 .ui-dialog .ui-dialog-buttonpane button {
-	margin-left:auto;
+	margin-left:10px;
 	margin-right:auto;
 }
+
 #dialog-message p {
 	padding:20px 0;
 	font-weight:bold;
 	font-size:1.0em;
 }
+
+#dialog-delete-form p {
+	padding:10px;
+	font-weight:bold;
+	font-size:1.0em; 
+}
+
+#dialog-delete-form p.error {
+	color: #f00;
+}
+
+#dialog-delete-form input[type="password"] {
+	padding:5px;
+	border:1px solid #888;
+	outline: none;
+	width: 180px;
+}
+
 </style>
 <script type="text/javascript" src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -96,10 +115,70 @@ var fetchList = function(){
 }
 
 $(function(){
-	$( "#list-guestbook li a" ).click( function( event ) {
+	
+	var dialogDelete = $( "#dialog-delete-form" ).dialog({
+		autoOpen: false,
+		height: 180,
+		width: 300,
+		modal: true,
+		buttons: {
+			"삭제": function(){
+				var no = $( "#delete-no" ).val();
+				var password = $( "#delete-password" ).val();
+				//console.log( no + ":" + password );
+
+				//ajax 통신
+				$.ajax( {
+					url : "${pageContext.request.contextPath }/guestbook/api/delete",
+					type: "post",
+					dataType: "json",
+					data: "no=" + no + "&" +
+					      "password=" + password,
+					//contentType: 'application/json', //JSON Type으로 데이터를 보낼 때,
+					success: function( response ){
+						if( response.result === "fail" ){
+							console.error( response.message );
+							return;
+						}
+
+						//삭제 실패
+						if( response.data === -1 ) {
+							$( "#dialog-delete-form .validateTips" ).hide();
+							$( "#dialog-delete-form .validateTips.error" ).show();
+							$( "#delete-password" ).val( "" );
+							return;
+						}
+						
+						//삭제 성공
+						$( "#list-guestbook li[data-no='" + response.data + "']" ).remove();
+						dialogDelete.dialog( "close" );
+					},
+					error: function( jqXHR, status, e ){
+						console.error( status + " : " + e );
+					}
+				} );				
+			},
+	        "취소": function() {
+	        	dialogDelete.dialog( "close" );
+	        }
+		},
+		close: function() {
+			$( "#dialog-delete-form .validateTips" ).show();
+			$( "#dialog-delete-form .validateTips.error" ).hide();
+			$( "#delete-no" ).val( "" );
+			$( "#delete-password" ).val( "" );
+		}
+	});	
+	
+	//live event
+	$( document ).on( "click", "#list-guestbook li a", function( event ){
 		event.preventDefault();
-		console.log( "삭제!!!" );
-	});
+		
+		window.no = $(this).data( "no" );
+		$( "#delete-no" ).val( no );
+		
+		dialogDelete.dialog( "open" );
+	} );
 	
 	$( "#add-form" ).submit( function( event ){
 		// submit event 기본 동작을 막음
@@ -197,9 +276,27 @@ $(function(){
 					<button id="btn-next" style="padding:10px 20px">다음</button>
 				</div>
 			</div>
+			
 			<div id="dialog-message" title="" style="display:none">
 			  <p></p>
 			</div>
+
+			<div id="dialog-delete-form" title="메세지 삭제" style="display:none">
+			  <p class="validateTips normal">
+			  	작성시 입력했던 비밀번호를 입력하세요.
+			  </p>
+			  <p class="validateTips error" style="display:none">
+			  	비밀번호가 틀립니다.
+			  </p>
+			  
+			  <form>
+			      <input type="hidden" name="no" id="delete-no" value=""/>
+			      <input type="password" name="password" id="delete-password" value="" class="text ui-widget-content ui-corner-all">
+			      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+			      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+			  </form>
+			</div>
+						
 		</div>
 		<c:import url="/WEB-INF/views/include/navigation.jsp">
 			<c:param name="menu" value="guestbook-ajax"/>
