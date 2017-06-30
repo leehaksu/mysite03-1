@@ -43,7 +43,7 @@ var messageBox = function( title, message, callback ){
 	});	
 }
 
-var render = function( vo ) {
+var render = function( vo, mode ) {
 	// 상용 app에서는 template library 를 사용한다. ex) ejs, leaf
 	var html = 
 		"<li data-no='" + vo.no + "'>" +
@@ -51,8 +51,12 @@ var render = function( vo ) {
 		"	<p>" + vo.message.replace( /\n/gi, "<br>" )  + "</P>" + 
 		"   <a href='' data-no='" + vo.no + "'>삭제</a>" + 
 		"</li>";
-		
-	$( "#list-guestbook" ).append( html );	
+	
+	if( mode === true ) {
+		$( "#list-guestbook" ).prepend( html );	
+	} else {
+		$( "#list-guestbook" ).append( html );
+	}
 }
 
 var fetchList = function(){
@@ -82,7 +86,7 @@ var fetchList = function(){
 				
 			//rendering
 			$.each( response.data, function( index, vo ){
-				render( vo );
+				render( vo, false );
 			} );
 		},
 		error: function( jqXHR, status, e ){
@@ -92,6 +96,10 @@ var fetchList = function(){
 }
 
 $(function(){
+	$( "#list-guestbook li a" ).click( function( event ) {
+		event.preventDefault();
+		console.log( "삭제!!!" );
+	});
 	
 	$( "#add-form" ).submit( function( event ){
 		// submit event 기본 동작을 막음
@@ -115,6 +123,39 @@ $(function(){
 			return;
 		}
 		
+		var message = $( "#ta-message" ).val();
+		if( message === "" ){
+			messageBox( "방명록에 글 남기기", "내용은 필수 입력 항목입니다.", function(){
+				$( "#ta-message" ).focus();
+			});	
+			return;
+		}
+		
+		//ajax 통신
+		$.ajax( {
+			url : "${pageContext.request.contextPath }/guestbook/api/add",
+			type: "post",
+			dataType: "json",
+			data: "name=" + name + "&" +
+				  "password=" + password + "&" +
+				  "message=" + message,
+			//contentType: 'application/json', //JSON Type으로 데이터를 보낼 때,
+			success: function( response ){
+				if( response.result === "fail" ) {
+					console.error( response.message );
+					return;
+				}
+				
+				// rendering
+				render( response.data, true );
+				
+				// reset form
+				$( "#add-form" )[0].reset();
+			},
+			error: function( jqXHR, status, e ){
+				console.error( status + " : " + e );
+			}
+		} );		
 	});
 	
 	$( window ).scroll( function(){
@@ -148,7 +189,7 @@ $(function(){
 				<form id="add-form" action="" method="post">
 					<input type="text" id="input-name" placeholder="이름">
 					<input type="password" id="input-password" placeholder="비밀번호">
-					<textarea id="tx-content" placeholder="내용을 입력해 주세요."></textarea>
+					<textarea id="ta-message" placeholder="내용을 입력해 주세요."></textarea>
 					<input type="submit" value="보내기" />
 				</form>
 				<ul id="list-guestbook"></ul>

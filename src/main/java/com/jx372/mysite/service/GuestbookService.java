@@ -28,10 +28,6 @@ public class GuestbookService {
 	
 	public boolean writeMessage( GuestbookVo vo ) {
 		int count = guestbookDao.insert(vo);
-		
-		// test: selectKey
-		System.out.println( vo );
-		
 		return count == 1;
 	}
 }
