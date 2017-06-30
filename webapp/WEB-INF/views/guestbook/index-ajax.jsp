@@ -8,9 +8,40 @@
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link rel="stylesheet" href="${pageContext.request.contextPath }/assets/css/guestbook-ajax.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style type="text/css">
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
+	float: none;
+	text-align:center
+}
+.ui-dialog .ui-dialog-buttonpane button {
+	margin-left:auto;
+	margin-right:auto;
+}
+#dialog-message p {
+	padding:20px 0;
+	font-weight:bold;
+	font-size:1.0em;
+}
+</style>
 <script type="text/javascript" src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
 var isEnd = false;
+
+var messageBox = function( title, message, callback ){
+	$( "#dialog-message" ).attr( "title", title );
+	$( "#dialog-message p" ).text( message );
+	$( "#dialog-message" ).dialog({
+		modal: true,
+		buttons: {
+			"확인": function() {
+  				$( this ).dialog( "close" );
+			}
+		},
+		close: callback || function() {}
+	});	
+}
 
 var render = function( vo ) {
 	// 상용 app에서는 template library 를 사용한다. ex) ejs, leaf
@@ -38,7 +69,7 @@ var fetchList = function(){
 		data: "",
 		//contentType: 'application/json', //JSON Type으로 데이터를 보낼 때,
 		success: function( response ){
-			if(response.result === "fail"){
+			if( response.result === "fail" ){
 				console.error( response.message );
 				return;
 			}
@@ -61,6 +92,43 @@ var fetchList = function(){
 }
 
 $(function(){
+	
+	$( "#add-form" ).submit( function( event ){
+		// submit event 기본 동작을 막음
+		// posting을 막음
+		event.preventDefault();
+		
+		//validate form data
+		var name = $( "#input-name" ).val();
+		if( name === "" ) {
+			messageBox( "방명록에 글 남기기", "이름은 필수 입력 항목입니다.", function(){
+				$( "#input-name" ).focus();
+			});
+			return;
+		}
+		
+		var password = $( "#input-password" ).val();
+		if( password === "" ){
+			messageBox( "방명록에 글 남기기", "비밀번호는 필수 입력 항목입니다.", function(){
+				$( "#input-password" ).focus();
+			});	
+			return;
+		}
+		
+	});
+	
+	$( window ).scroll( function(){
+		var $window = $(this);
+		var scrollTop = $window.scrollTop();
+		var windowHeight = $window.height();
+		var documentHeight = $( document ).height();
+			
+		// console.log( documentHeight + ">=" + scrollTop + "+" + windowHeight );	
+		// scrollbar thumb가 바닥 전 10px까지 왔을 때...
+		if( scrollTop + windowHeight + 10 > documentHeight ) {
+			fetchList();
+		}
+	});
 	
 	$( "#btn-next" ).click( function(){
 		fetchList();
@@ -87,6 +155,9 @@ $(function(){
 				<div style="margin:20px 0; text-align:center">
 					<button id="btn-next" style="padding:10px 20px">다음</button>
 				</div>
+			</div>
+			<div id="dialog-message" title="" style="display:none">
+			  <p></p>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/include/navigation.jsp">
