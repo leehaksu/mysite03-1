@@ -40,6 +40,16 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
   
+   <!-- CORS Filter -->  
+  <filter>
+    <filter-name>CORSFilter</filter-name>
+    <filter-class>com.jx372.security.CORSFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CORSFilter</filter-name>
+    <url-pattern>/guestbook/api/*</url-pattern>
+  </filter-mapping>
+   
   <!-- Dispatcher Servlet -->   
   <servlet>
     <servlet-name>spring</servlet-name>
