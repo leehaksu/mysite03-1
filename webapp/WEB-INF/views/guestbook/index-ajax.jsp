@@ -44,9 +44,12 @@
 
 </style>
 <script type="text/javascript" src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/assets/js/ejs/ejs.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
 var isEnd = false;
+var listTemplate = new EJS( { url:"${pageContext.request.contextPath }/assets/js/template/guestbook-list.ejs" } );
+var listItemTemplate = new EJS( { url:"${pageContext.request.contextPath }/assets/js/template/guestbook-list-item.ejs" } );
 
 var messageBox = function( title, message, callback ){
 	$( "#dialog-message" ).attr( "title", title );
@@ -64,12 +67,16 @@ var messageBox = function( title, message, callback ){
 
 var render = function( vo, mode ) {
 	// 상용 app에서는 template library 를 사용한다. ex) ejs, leaf
+	/*
 	var html = 
 		"<li data-no='" + vo.no + "'>" +
 		"	<strong>" + vo.name + "</strong>" +
 		"	<p>" + vo.message.replace( /\n/gi, "<br>" )  + "</P>" + 
 		"   <a href='' data-no='" + vo.no + "'>삭제</a>" + 
 		"</li>";
+	*/
+	var html = listItemTemplate.render( vo );
+	console.log( html );
 	
 	if( mode === true ) {
 		$( "#list-guestbook" ).prepend( html );	
@@ -104,9 +111,15 @@ var fetchList = function(){
 			}
 				
 			//rendering
+			/*
 			$.each( response.data, function( index, vo ){
 				render( vo, false );
 			} );
+			*/
+			
+			var html = listTemplate.render( response );
+			$( "#list-guestbook" ).html( html );
+			
 		},
 		error: function( jqXHR, status, e ){
 			console.error( status + " : " + e );
@@ -184,41 +197,45 @@ $(function(){
 		// submit event 기본 동작을 막음
 		// posting을 막음
 		event.preventDefault();
+
+		var guestbookVo = {};
 		
 		//validate form data
-		var name = $( "#input-name" ).val();
-		if( name === "" ) {
+		guestbookVo.name = $( "#input-name" ).val();
+		if( guestbookVo.name === "" ) {
 			messageBox( "방명록에 글 남기기", "이름은 필수 입력 항목입니다.", function(){
 				$( "#input-name" ).focus();
 			});
 			return;
 		}
 		
-		var password = $( "#input-password" ).val();
-		if( password === "" ){
+		guestbookVo.password = $( "#input-password" ).val();
+		if( guestbookVo.password === "" ){
 			messageBox( "방명록에 글 남기기", "비밀번호는 필수 입력 항목입니다.", function(){
 				$( "#input-password" ).focus();
 			});	
 			return;
 		}
 		
-		var message = $( "#ta-message" ).val();
-		if( message === "" ){
+		guestbookVo.message = $( "#ta-message" ).val();
+		if( guestbookVo.message === "" ){
 			messageBox( "방명록에 글 남기기", "내용은 필수 입력 항목입니다.", function(){
 				$( "#ta-message" ).focus();
 			});	
 			return;
 		}
 		
+		console.log( $.param( guestbookVo ) );
+		console.log( JSON.stringify( guestbookVo ) );
+		
 		//ajax 통신
 		$.ajax( {
 			url : "${pageContext.request.contextPath }/guestbook/api/add",
 			type: "post",
 			dataType: "json",
-			data: "name=" + name + "&" +
-				  "password=" + password + "&" +
-				  "message=" + message,
-			//contentType: 'application/json', //JSON Type으로 데이터를 보낼 때,
+			//data: $.param( guestbookVo ),
+			data: JSON.stringify( guestbookVo ),
+			contentType: 'application/json; charset=utf-8', //JSON Type으로 데이터를 보낼 때,
 			success: function( response ){
 				if( response.result === "fail" ) {
 					console.error( response.message );
