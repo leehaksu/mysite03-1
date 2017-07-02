@@ -20,7 +20,7 @@ public class GuestbookDao {
 	}
 	
 	public List<GuestbookVo> getList( Long startNo ) {
-		List<GuestbookVo> list = sqlSession.selectList( "guestbook.getList3", startNo );
+		List<GuestbookVo> list = sqlSession.selectList( "guestbook.getList2", startNo );
 		System.out.println( list );
 		return list;
 	}	
